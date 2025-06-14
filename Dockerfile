@@ -1,9 +1,14 @@
-# Use official Java image
-FROM openjdk:17-jdk-alpine
-WORKDIR /app
+# Base image with Tomcat
+FROM tomcat:9.0
 
-# Copy built jar file
-COPY target/*.jar app.jar
+# Remove default ROOT application (optional)
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
-# Run the jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Copy WAR file to Tomcat's webapps directory
+COPY target/app.war /usr/local/tomcat/webapps/ROOT.war
+
+# Expose default Tomcat port
+EXPOSE 8081
+
+# Start Tomcat
+CMD ["catalina.sh", "run"]
